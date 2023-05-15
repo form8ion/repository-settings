@@ -1,0 +1,11 @@
+root: true
+
+extends:
+  - '@form8ion'
+  - '@form8ion/cucumber'
+
+
+rules:
+  import/extensions:
+    - error
+    - ignorePackages
