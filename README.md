@@ -15,6 +15,8 @@ form8ion plugin for managing configuration for the
 * [Usage](#usage)
   * [Installation](#installation)
   * [Example](#example)
+    * [Import](#import)
+    * [Execute](#execute)
 * [Contributing](#contributing)
   * [Dependencies](#dependencies)
   * [Verification](#verification)
@@ -47,7 +49,14 @@ import {scaffold} from '@form8ion/repository-settings';
 
 ```javascript
 (async () => {
-  await scaffold({projectRoot: process.cwd()});
+  await scaffold({
+    projectRoot: process.cwd(),
+    projectName: 'project-name',
+    description: 'description of the project',
+    homepage: 'https://npm.im/project-name',
+    visibility: 'Public',
+    topics: ['topic 1', 'topic 2']
+  });
 })();
 ```
 
