@@ -79,6 +79,6 @@
   "dependencies": {
     "@travi/cli-messages": "^1.1.0",
     "js-yaml": "^4.1.0",
-    "make-dir": "^3.1.0"
+    "make-dir": "^4.0.0"
   }
 }
