@@ -1,11 +1,26 @@
 import {promises as fs} from 'node:fs';
+import {dump, load} from 'js-yaml';
 
-import yaml from 'js-yaml';
 import {assert} from 'chai';
-import {Then} from '@cucumber/cucumber';
+import {Given, Then} from '@cucumber/cucumber';
+import any from '@travi/any';
+
+Given('the GitHub repository settings are managed by the repository-settings app', async function () {
+  this.existingSettingsContent = {...any.simpleObject(), repository: any.simpleObject()};
+
+  await fs.mkdir(`${this.projectRoot}/.github`, {recursive: true});
+  await fs.writeFile(
+    `${this.projectRoot}/.github/settings.yml`,
+    dump(this.existingSettingsContent)
+  );
+});
+
+Given('the GitHub repository settings are not managed by the repository-settings app', async function () {
+  return undefined;
+});
 
 Then('repository settings are configured', async function () {
-  const settings = yaml.load(await fs.readFile(`${process.cwd()}/.github/settings.yml`, 'utf-8'));
+  const settings = load(await fs.readFile(`${process.cwd()}/.github/settings.yml`, 'utf-8'));
 
   assert.deepEqual(
     settings,
@@ -20,4 +35,22 @@ Then('repository settings are configured', async function () {
       }
     }
   );
+});
+
+Then('properties are updated in the settings file', async function () {
+  assert.deepEqual(
+    load(await fs.readFile(`${this.projectRoot}/.github/settings.yml`, 'utf-8')),
+    {
+      ...this.existingSettingsContent,
+      repository: {
+        ...this.existingSettingsContent.repository,
+        homepage: this.homepage,
+        topics: this.tags.join(', ')
+      }
+    }
+  );
+});
+
+Then('no updates are attempted to a settings file', async function () {
+  return undefined;
 });

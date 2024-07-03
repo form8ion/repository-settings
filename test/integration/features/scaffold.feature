@@ -1,4 +1,4 @@
-Feature: Scaffolder
+Feature: Scaffold
 
   Scenario: Scaffold
     When the project is scaffolded
