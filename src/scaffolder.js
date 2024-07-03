@@ -1,15 +1,17 @@
 import {promises as fs} from 'node:fs';
-import {dump} from 'js-yaml';
 import {info} from '@travi/cli-messages';
+import {fileTypes, writeConfigFile} from '@form8ion/core';
 
 export default async function scaffoldSettings({projectRoot, projectName, description, homepage, visibility, topics}) {
   info('Writing settings file', {level: 'secondary'});
 
   await fs.mkdir(`${projectRoot}/.github`, {recursive: true});
 
-  return fs.writeFile(
-    `${projectRoot}/.github/settings.yml`,
-    dump({
+  return writeConfigFile({
+    path: `${projectRoot}/.github`,
+    name: 'settings',
+    format: fileTypes.YAML,
+    config: {
       _extends: '.github',
       repository: {
         name: projectName,
@@ -18,6 +20,6 @@ export default async function scaffoldSettings({projectRoot, projectName, descri
         private: 'Public' !== visibility,
         ...topics && {topics: topics.join(', ')}
       }
-    })
-  );
+    }
+  });
 }
