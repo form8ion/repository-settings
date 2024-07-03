@@ -44,7 +44,7 @@ Then('properties are updated in the settings file', async function () {
       ...this.existingSettingsContent,
       repository: {
         ...this.existingSettingsContent.repository,
-        homepage: this.homepage,
+        ...this.homepage && {homepage: this.homepage},
         topics: this.tags.join(', ')
       }
     }

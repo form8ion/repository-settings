@@ -41,14 +41,13 @@ When('the project is scaffolded', async function () {
 });
 
 When('scaffolder results are processed', async function () {
-  this.homepage = any.url();
   this.tags = any.listOf(any.word);
 
   if (await test({projectRoot: this.projectRoot})) {
     await lift({
       projectRoot: this.projectRoot,
       results: {
-        projectDetails: {homepage: this.homepage},
+        projectDetails: this.projectDetails,
         tags: this.tags
       }
     });
