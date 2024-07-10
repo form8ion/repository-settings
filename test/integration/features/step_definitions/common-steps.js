@@ -41,8 +41,6 @@ When('the project is scaffolded', async function () {
 });
 
 When('scaffolder results are processed', async function () {
-  this.tags = any.listOf(any.word);
-
   if (await test({projectRoot: this.projectRoot})) {
     await lift({
       projectRoot: this.projectRoot,
