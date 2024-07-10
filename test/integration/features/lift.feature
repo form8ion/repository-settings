@@ -16,3 +16,6 @@ Feature: Lift
     Given the GitHub repository settings are not managed by the repository-settings app
     When scaffolder results are processed
     Then no updates are attempted to a settings file
+
+  @wip
+  Scenario: convert `private` boolean to visibility
