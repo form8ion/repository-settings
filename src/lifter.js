@@ -7,7 +7,7 @@ export default async function ({projectRoot, results: {projectDetails: {homepage
     name: 'settings',
     config: {
       repository: {
-        homepage,
+        ...homepage && {homepage},
         ...tags && {topics: tags.join(', ')}
       }
     }
