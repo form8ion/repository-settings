@@ -15,10 +15,7 @@ describe('lifter', () => {
   it('should set properties in the settings file', async () => {
     const result = await lift({
       projectRoot,
-      results: {
-        projectDetails: {homepage},
-        tags
-      }
+      results: {homepage, tags}
     });
 
     expect(result).toEqual({});
@@ -58,20 +55,14 @@ describe('lifter', () => {
   it('should not result in an error when tags are not provided in the results', async () => {
     await lift({
       projectRoot,
-      results: {
-        projectDetails: {homepage}
-      }
+      results: {homepage}
     });
 
     expect(mergeIntoExistingConfigFile).toHaveBeenCalledWith({
       format: fileTypes.YAML,
       path: `${projectRoot}/.github`,
       name: 'settings',
-      config: {
-        repository: {
-          homepage
-        }
-      }
+      config: {repository: {homepage}}
     });
   });
 });

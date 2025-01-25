@@ -45,7 +45,7 @@ When('scaffolder results are processed', async function () {
     await lift({
       projectRoot: this.projectRoot,
       results: {
-        projectDetails: this.projectDetails,
+        homepage: this.homepage,
         tags: this.tags
       }
     });
