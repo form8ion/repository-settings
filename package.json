@@ -13,7 +13,7 @@
   "main": "./lib/index.mjs",
   "sideEffects": false,
   "scripts": {
-    "lint:publish": "publint",
+    "lint:publish": "publint --strict",
     "build:js": "rollup --config",
     "watch": "run-s 'build:js -- --watch'",
     "clean": "rimraf ./lib",
