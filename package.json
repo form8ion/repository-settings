@@ -27,7 +27,7 @@
     "lint:sensitive": "ban",
     "prepare": "husky install",
     "lint:js": "eslint . --cache",
-    "lint:js:fix": "run-s lint:js -- --fix",
+    "lint:js:fix": "run-s 'lint:js -- --fix'",
     "lint:md": "remark . --frail",
     "generate:md": "remark . --output",
     "lint:peer": "npm ls >/dev/null",
