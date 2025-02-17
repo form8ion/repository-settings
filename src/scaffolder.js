@@ -2,6 +2,8 @@ import {promises as fs} from 'node:fs';
 import {info} from '@travi/cli-messages';
 import {fileTypes, writeConfigFile} from '@form8ion/core';
 
+import {scaffold as scaffoldRepository} from './repository/index.js';
+
 export default async function scaffoldSettings({projectRoot, projectName, description, homepage, visibility, topics}) {
   info('Writing settings file', {level: 'secondary'});
 
@@ -13,13 +15,7 @@ export default async function scaffoldSettings({projectRoot, projectName, descri
     format: fileTypes.YAML,
     config: {
       _extends: '.github',
-      repository: {
-        name: projectName,
-        description,
-        homepage,
-        private: 'Public' !== visibility,
-        ...topics && {topics: topics.join(', ')}
-      }
+      repository: scaffoldRepository({projectName, description, homepage, visibility, topics})
     }
   });
 }
