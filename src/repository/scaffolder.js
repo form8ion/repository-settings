@@ -1,9 +1,9 @@
-export default function ({projectName, description, homepage, visibility, topics}) {
+export default function ({projectName, description, homepage, visibility, topics = []}) {
   return {
     name: projectName,
     description,
     homepage,
     private: 'Public' !== visibility,
-    ...topics && {topics: topics.join(', ')}
+    ...topics.length && {topics: topics.join(', ')}
   };
 }

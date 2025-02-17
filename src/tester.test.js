@@ -1,6 +1,7 @@
 import {fileExists} from '@form8ion/core';
 
-import {when} from 'jest-when';
+// eslint-disable-next-line import/no-unresolved
+import {when} from 'vitest-when';
 import any from '@travi/any';
 import {describe, expect, it, vi} from 'vitest';
 
@@ -12,13 +13,13 @@ describe('predicate', () => {
   const projectRoot = any.string();
 
   it('should return `true` if the settings file is present', async () => {
-    when(fileExists).calledWith(`${projectRoot}/.github/settings.yml`).mockResolvedValue(true);
+    when(fileExists).calledWith(`${projectRoot}/.github/settings.yml`).thenResolve(true);
 
     expect(await repositoryIsManagedBySettingsApp({projectRoot})).toBe(true);
   });
 
   it('should return `false` if the settings file is not present', async () => {
-    when(fileExists).calledWith(`${projectRoot}/.github/settings.yml`).mockResolvedValue(false);
+    when(fileExists).calledWith(`${projectRoot}/.github/settings.yml`).thenResolve(false);
 
     expect(await repositoryIsManagedBySettingsApp({projectRoot})).toBe(false);
   });

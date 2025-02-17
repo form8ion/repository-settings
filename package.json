@@ -68,7 +68,6 @@
     "cz-conventional-changelog": "3.3.0",
     "gherkin-lint": "4.2.4",
     "husky": "9.1.7",
-    "jest-when": "3.7.0",
     "js-yaml": "4.1.0",
     "lockfile-lint": "4.14.0",
     "mock-fs": "5.5.0",
@@ -80,6 +79,7 @@
     "rimraf": "6.0.1",
     "rollup": "4.34.7",
     "rollup-plugin-auto-external": "2.0.0",
-    "vitest": "3.0.5"
+    "vitest": "3.0.5",
+    "vitest-when": "0.6.0"
   }
 }
