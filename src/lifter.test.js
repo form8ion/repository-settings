@@ -1,4 +1,4 @@
-import {fileTypes, mergeIntoExistingConfigFile} from '@form8ion/core';
+import {fileTypes, loadConfigFile, writeConfigFile} from '@form8ion/core';
 
 import any from '@travi/any';
 import {describe, expect, it, vi} from 'vitest';
@@ -24,18 +24,25 @@ describe('lifter', () => {
     const repositoryUpdates = any.simpleObject();
     const branchProtectionDetails = any.simpleObject();
     const rulesetsDetails = any.simpleObject();
-    when(liftRepository).calledWith({homepage, tags}).thenReturn(repositoryUpdates);
+    const existingRepositoryDetails = any.simpleObject();
+    const existingRulesets = any.simpleObject();
+    const existingConfig = {...any.simpleObject(), repository: existingRepositoryDetails, rulesets: existingRulesets};
+    when(loadConfigFile)
+      .calledWith({format: fileTypes.YAML, path: `${projectRoot}/.github`, name: 'settings'})
+      .thenResolve(existingConfig);
+    when(liftRepository).calledWith({homepage, tags, existingRepositoryDetails}).thenReturn(repositoryUpdates);
     when(liftBranchProtection).calledWith().thenReturn(branchProtectionDetails);
-    when(liftRulesets).calledWith().thenReturn(rulesetsDetails);
+    when(liftRulesets).calledWith({existingRulesets}).thenReturn(rulesetsDetails);
 
     const result = await lift({projectRoot, results: {homepage, tags}});
 
     expect(result).toEqual({});
-    expect(mergeIntoExistingConfigFile).toHaveBeenCalledWith({
+    expect(writeConfigFile).toHaveBeenCalledWith({
       format: fileTypes.YAML,
       path: `${projectRoot}/.github`,
       name: 'settings',
       config: {
+        ...existingConfig,
         repository: repositoryUpdates,
         branches: branchProtectionDetails,
         rulesets: rulesetsDetails

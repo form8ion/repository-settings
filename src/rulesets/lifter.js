@@ -1,4 +1,6 @@
-export default function () {
+export default function ({existingRulesets}) {
+  if (existingRulesets) return existingRulesets;
+
   return [{
     name: 'prevent destruction of the default branch',
     target: 'branch',
