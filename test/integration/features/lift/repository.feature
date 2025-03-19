@@ -21,7 +21,6 @@ Feature: Lift
     When scaffolder results are processed
     Then properties are updated in the settings file
 
-  @wip
   Scenario: Lift w/ existing tags and new tags
     Given the GitHub repository settings are managed by the repository-settings app
     And the existing settings file includes existing tags
