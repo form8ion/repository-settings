@@ -39,7 +39,8 @@
     "test:integration:wip:debug": "DEBUG=test run-s 'test:integration:wip'",
     "test:integration:focus": "run-s 'test:integration:base -- --profile focus'",
     "lint:gherkin": "gherkin-lint --config=.gherkin-lintrc.json",
-    "test": "npm-run-all --print-label build --parallel lint:* --parallel test:*"
+    "pretest": "run-s build",
+    "test": "npm-run-all --print-label --parallel lint:* --parallel test:*"
   },
   "files": [
     "example.js",
