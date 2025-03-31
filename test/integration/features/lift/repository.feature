@@ -5,21 +5,21 @@ Feature: Lift
     And the scaffolder results include homepage
     And the scaffolder results include tags
     When scaffolder results are processed
-    Then properties are updated in the settings file
+    Then repository details are updated in the settings file
 
   Scenario: Lift w/o project details
     Given the GitHub repository settings are managed by the repository-settings app
     And the scaffolder results include tags
     But the scaffolder results do not include homepage
     When scaffolder results are processed
-    Then properties are updated in the settings file
+    Then repository details are updated in the settings file
 
   Scenario: Lift w/o tags
     Given the GitHub repository settings are managed by the repository-settings app
     And the scaffolder results include homepage
     But the scaffolder results do not include tags
     When scaffolder results are processed
-    Then properties are updated in the settings file
+    Then repository details are updated in the settings file
 
   Scenario: Lift w/ existing tags and new tags
     Given the GitHub repository settings are managed by the repository-settings app
@@ -27,7 +27,7 @@ Feature: Lift
     And the scaffolder results include homepage
     And the scaffolder results include tags
     When scaffolder results are processed
-    Then properties are updated in the settings file
+    Then repository details are updated in the settings file
 
   Scenario: Not managed with repository-settings
     Given the GitHub repository settings are not managed by the repository-settings app

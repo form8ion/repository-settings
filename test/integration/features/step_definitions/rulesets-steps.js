@@ -24,20 +24,42 @@ Given('rulesets are not configured', async function () {
 Then('rulesets include a rule to prevent destruction of the default branch', async function () {
   const {rulesets} = load(await fs.readFile(`${this.projectRoot}/.github/settings.yml`, 'utf-8'));
 
-  assert.deepEqual(
+  assert.deepNestedInclude(
     rulesets,
-    [{
+    {
       name: 'prevent destruction of the default branch',
       target: 'branch',
       enforcement: 'active',
       conditions: {ref_name: {include: ['~DEFAULT_BRANCH'], exclude: []}},
       rules: [{type: 'deletion'}, {type: 'non_fast_forward'}]
-    }]
+    }
   );
 });
 
-Then('rulesets are untouched', async function () {
+Then('existing rulesets are untouched', async function () {
   const {rulesets} = load(await fs.readFile(`${this.projectRoot}/.github/settings.yml`, 'utf-8'));
 
   assert.deepEqual(rulesets, this.existingRulesets);
+});
+
+Then('rulesets include a rule to require verification to pass', async function () {
+  const {rulesets} = load(await fs.readFile(`${this.projectRoot}/.github/settings.yml`, 'utf-8'));
+
+  assert.deepNestedInclude(
+    rulesets,
+    {
+      name: 'verification must pass',
+      target: 'branch',
+      enforcement: 'active',
+      conditions: {ref_name: {include: ['~DEFAULT_BRANCH'], exclude: []}},
+      rules: [{
+        type: 'required_status_checks',
+        parameters: {
+          strict_required_status_checks_policy: false,
+          required_status_checks: [{context: 'workflow-result', integration_id: 15368}]
+        }
+      }],
+      bypass_actors: [{actor_id: 3208999, actor_type: 'Team', bypass_mode: 'always'}]
+    }
+  );
 });
