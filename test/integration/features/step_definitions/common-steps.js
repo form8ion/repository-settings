@@ -16,6 +16,7 @@ Before(async function () {
   this.projectHomepage = any.url();
   this.projectVisibility = any.fromList(['Public', 'Private']);
   this.topics = any.listOf(any.word);
+  this.existingRulesets = [];
 
   // eslint-disable-next-line import/no-extraneous-dependencies,import/no-unresolved
   ({scaffold, test, lift} = await import('@form8ion/repository-settings'));
