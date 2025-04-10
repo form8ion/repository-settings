@@ -19,6 +19,12 @@ describe('lifter', () => {
   const projectRoot = any.simpleObject();
   const tags = any.listOf(any.word);
   const homepage = any.url();
+  const logger = {
+    info: () => undefined,
+    success: () => undefined,
+    warn: () => undefined,
+    error: () => undefined
+  };
 
   it('should set properties in the settings file', async () => {
     const repositoryUpdates = any.simpleObject();
@@ -34,7 +40,7 @@ describe('lifter', () => {
     when(liftBranchProtection).calledWith().thenReturn(branchProtectionDetails);
     when(liftRulesets).calledWith({existingRulesets}).thenReturn(rulesetsDetails);
 
-    const result = await lift({projectRoot, results: {homepage, tags}});
+    const result = await lift({projectRoot, results: {homepage, tags}}, {logger});
 
     expect(result).toEqual({});
     expect(writeConfigFile).toHaveBeenCalledWith({

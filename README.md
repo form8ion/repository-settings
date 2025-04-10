@@ -43,21 +43,45 @@ $ npm install @form8ion/repository-settings --save-prod
 #### Import
 
 ```javascript
-import {scaffold} from '@form8ion/repository-settings';
+import {scaffold, test as projectManagedByRepositorySettings, lift} from '@form8ion/repository-settings';
 ```
 
 #### Execute
 
 ```javascript
 (async () => {
-  await scaffold({
-    projectRoot: process.cwd(),
-    projectName: 'project-name',
-    description: 'description of the project',
-    homepage: 'https://npm.im/project-name',
-    visibility: 'Public',
-    topics: ['topic 1', 'topic 2']
-  });
+  const projectRoot = process.cwd();
+  const logger = {
+    info: message => console.error(message),
+    success: message => console.error(message),
+    warn: message => console.error(message),
+    error: message => console.error(message)
+  };
+
+  await scaffold(
+    {
+      projectRoot,
+      projectName: 'project-name',
+      description: 'description of the project',
+      homepage: 'https://npm.im/project-name',
+      visibility: 'Public',
+      topics: ['topic 1', 'topic 2']
+    },
+    {logger}
+  );
+
+  if (await projectManagedByRepositorySettings({projectRoot})) {
+    await lift(
+      {
+        projectRoot,
+        results: {
+          homepage: 'https://npm.im/project-name',
+          tags: ['tag1', 'tag2']
+        }
+      },
+      {logger}
+    );
+  }
 })();
 ```
 

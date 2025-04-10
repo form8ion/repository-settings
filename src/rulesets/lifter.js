@@ -2,7 +2,7 @@ import uniqBy from 'lodash.uniqby';
 
 const GITHUB_ACTIONS_INTEGRATION_ID = 15368;
 
-export default function ({existingRulesets}) {
+export default function liftRulesets({existingRulesets}) {
   return uniqBy(
     [
       ...existingRulesets || [],

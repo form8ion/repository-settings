@@ -1,4 +1,4 @@
-export default function ({projectName, description, homepage, visibility, topics = []}) {
+export default function scaffoldRepositoryDetails({projectName, description, homepage, visibility, topics = []}) {
   return {
     name: projectName,
     description,
