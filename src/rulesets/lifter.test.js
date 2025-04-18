@@ -1,13 +1,21 @@
-import {describe, it, expect} from 'vitest';
+import {describe, it, expect, vi} from 'vitest';
 import any from '@travi/any';
+import {when} from 'vitest-when';
 
+import {requiredCheckBypassPrompt} from '../prompt/index.js';
 import liftRulesets from './lifter.js';
+
+vi.mock('../prompt/index.js');
 
 describe('rulesets details lifter', () => {
   const GITHUB_ACTIONS_INTEGRATION_ID = 15368;
+  const prompt = () => undefined;
+  const bypassTeamId = any.integer();
 
   it('should define rules to prevent destruction of the default branch and require verification to pass', async () => {
-    expect(liftRulesets({})).toEqual([
+    when(requiredCheckBypassPrompt).calledWith(prompt).thenResolve({team: bypassTeamId});
+
+    expect(await liftRulesets({}, {prompt})).toEqual([
       {
         name: 'prevent destruction of the default branch',
         target: 'branch',
@@ -27,15 +35,16 @@ describe('rulesets details lifter', () => {
             required_status_checks: [{context: 'workflow-result', integration_id: GITHUB_ACTIONS_INTEGRATION_ID}]
           }
         }],
-        bypass_actors: [{actor_id: 3208999, actor_type: 'Team', bypass_mode: 'always'}]
+        bypass_actors: [{actor_id: bypassTeamId, actor_type: 'Team', bypass_mode: 'always'}]
       }
     ]);
   });
 
   it('should append to the existing rulesets', async () => {
     const existingRulesets = any.listOf(() => ({...any.simpleObject, name: any.word()}));
+    when(requiredCheckBypassPrompt).calledWith(prompt).thenResolve({team: bypassTeamId});
 
-    expect(liftRulesets({existingRulesets})).toEqual([
+    expect(await liftRulesets({existingRulesets}, {prompt})).toEqual([
       ...existingRulesets,
       {
         name: 'prevent destruction of the default branch',
@@ -56,7 +65,7 @@ describe('rulesets details lifter', () => {
             required_status_checks: [{context: 'workflow-result', integration_id: GITHUB_ACTIONS_INTEGRATION_ID}]
           }
         }],
-        bypass_actors: [{actor_id: 3208999, actor_type: 'Team', bypass_mode: 'always'}]
+        bypass_actors: [{actor_id: bypassTeamId, actor_type: 'Team', bypass_mode: 'always'}]
       }
     ]);
   });
@@ -68,6 +77,6 @@ describe('rulesets details lifter', () => {
       {...any.simpleObject, name: 'verification must pass'}
     ];
 
-    expect(liftRulesets({existingRulesets})).toEqual(existingRulesets);
+    expect(await liftRulesets({existingRulesets}, {})).toEqual(existingRulesets);
   });
 });

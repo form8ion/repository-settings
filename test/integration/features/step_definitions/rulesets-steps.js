@@ -52,7 +52,7 @@ Given('required checks are configured', async function () {
           required_status_checks: [{context: 'workflow-result', integration_id: GITHUB_ACTIONS_INTEGRATION_ID}]
         }
       }],
-      bypass_actors: [{actor_id: 3208999, actor_type: 'Team', bypass_mode: 'always'}]
+      bypass_actors: [{actor_id: this.maintenanceTeamId, actor_type: 'Team', bypass_mode: 'always'}]
     }
   ];
 });
@@ -96,7 +96,7 @@ Then('rulesets include a rule to require verification to pass', async function (
           required_status_checks: [{context: 'workflow-result', integration_id: GITHUB_ACTIONS_INTEGRATION_ID}]
         }
       }],
-      bypass_actors: [{actor_id: 3208999, actor_type: 'Team', bypass_mode: 'always'}]
+      bypass_actors: [{actor_id: this.maintenanceTeamId, actor_type: 'Team', bypass_mode: 'always'}]
     }
   );
   assert.equal(rulesets.filter(rule => 'verification must pass' === rule.name).length, 1);

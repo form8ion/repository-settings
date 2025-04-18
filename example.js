@@ -1,7 +1,8 @@
 // #### Import
 // remark-usage-ignore-next
 import stubbedFs from 'mock-fs';
-import {scaffold, test as projectManagedByRepositorySettings, lift} from './lib/index.mjs';
+import any from '@travi/any';
+import {scaffold, test as projectManagedByRepositorySettings, lift, promptConstants} from './lib/index.mjs';
 
 // remark-usage-ignore-next
 stubbedFs();
@@ -40,7 +41,19 @@ stubbedFs();
           tags: ['tag1', 'tag2']
         }
       },
-      {logger}
+      {
+        logger,
+        prompt: async ({id}) => {
+          const {questionNames, ids} = promptConstants;
+          const expectedPromptId = ids.REQUIRED_CHECK_BYPASS;
+
+          if (expectedPromptId === id) {
+            return {[questionNames[expectedPromptId].CHECK_BYPASS_TEAM]: any.word()};
+          }
+
+          throw new Error(`Unknown prompt with ID: ${id}`);
+        }
+      }
     );
   }
 })();

@@ -43,7 +43,8 @@ $ npm install @form8ion/repository-settings --save-prod
 #### Import
 
 ```javascript
-import {scaffold, test as projectManagedByRepositorySettings, lift} from '@form8ion/repository-settings';
+import any from '@travi/any';
+import {scaffold, test as projectManagedByRepositorySettings, lift, promptConstants} from '@form8ion/repository-settings';
 ```
 
 #### Execute
@@ -79,7 +80,19 @@ import {scaffold, test as projectManagedByRepositorySettings, lift} from '@form8
           tags: ['tag1', 'tag2']
         }
       },
-      {logger}
+      {
+        logger,
+        prompt: async ({id}) => {
+          const {questionNames, ids} = promptConstants;
+          const expectedPromptId = ids.REQUIRED_CHECK_BYPASS;
+
+          if (expectedPromptId === id) {
+            return {[questionNames[expectedPromptId].CHECK_BYPASS_TEAM]: any.word()};
+          }
+
+          throw new Error(`Unknown prompt with ID: ${id}`);
+        }
+      }
     );
   }
 })();

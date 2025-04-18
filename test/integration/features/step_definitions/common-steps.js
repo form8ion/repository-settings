@@ -5,7 +5,9 @@ import {After, Before, When} from '@cucumber/cucumber';
 import stubbedFs from 'mock-fs';
 import any from '@travi/any';
 
-let scaffold, test, lift;
+// eslint-disable-next-line import/no-extraneous-dependencies,import/no-unresolved
+import {scaffold, test, lift, promptConstants} from '@form8ion/repository-settings';
+
 const __dirname = dirname(fileURLToPath(import.meta.url));          // eslint-disable-line no-underscore-dangle
 const stubbedNodeModules = stubbedFs.load(resolve(__dirname, '..', '..', '..', '..', 'node_modules'));
 const logger = {
@@ -23,9 +25,6 @@ Before(async function () {
   this.projectVisibility = any.fromList(['Public', 'Private']);
   this.topics = any.listOf(any.word);
   this.existingRulesets = [];
-
-  // eslint-disable-next-line import/no-extraneous-dependencies,import/no-unresolved
-  ({scaffold, test, lift} = await import('@form8ion/repository-settings'));
 
   stubbedFs({
     node_modules: stubbedNodeModules
@@ -51,16 +50,22 @@ When('the project is scaffolded', async function () {
 });
 
 When('scaffolder results are processed', async function () {
+  this.repositoryOwner = any.word();
+
   if (await test({projectRoot: this.projectRoot})) {
     await lift(
       {
         projectRoot: this.projectRoot,
+        vcs: {owner: this.repositoryOwner},
         results: {
           homepage: this.homepage,
           tags: this.tags
         }
       },
-      {logger}
+      {
+        logger,
+        prompt: ({id}) => ({[promptConstants.questionNames[id].CHECK_BYPASS_TEAM]: this.maintenanceTeamId})
+      }
     );
   }
 });
