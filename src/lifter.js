@@ -21,7 +21,7 @@ export default async function liftRepositorySettings({projectRoot, results: {hom
       ...existingConfig,
       repository: liftRepository({homepage, tags, existingRepositoryDetails: existingConfig.repository}),
       branches: liftBranchProtection(),
-      rulesets: await liftRulesets({existingRulesets: existingConfig.rulesets, vcs}, {prompt})
+      rulesets: await liftRulesets({existingRulesets: existingConfig.rulesets, vcs}, {prompt, logger})
     }
   });
 

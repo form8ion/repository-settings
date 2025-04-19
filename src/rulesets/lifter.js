@@ -4,10 +4,12 @@ import {requiredCheckBypassPrompt} from '../prompt/index.js';
 
 const GITHUB_ACTIONS_INTEGRATION_ID = 15368;
 
-async function constructVerificationRule(prompt, existingRulesets) {
+async function constructVerificationRule(existingRulesets, {prompt, logger}) {
   if (existingRulesets.find(ruleset => 'verification must pass' === ruleset.name)) {
     return undefined;
   }
+
+  logger.info('Defining verification ruleset', {level: 'secondary'});
 
   const {team} = await requiredCheckBypassPrompt(prompt);
 
@@ -27,7 +29,9 @@ async function constructVerificationRule(prompt, existingRulesets) {
   };
 }
 
-export default async function liftRulesets({existingRulesets = []}, {prompt}) {
+export default async function liftRulesets({existingRulesets = []}, {prompt, logger}) {
+  logger.info('Lifting rulesets', {level: 'secondary'});
+
   return uniqBy(
     [
       ...existingRulesets,
@@ -38,7 +42,7 @@ export default async function liftRulesets({existingRulesets = []}, {prompt}) {
         conditions: {ref_name: {include: ['~DEFAULT_BRANCH'], exclude: []}},
         rules: [{type: 'deletion'}, {type: 'non_fast_forward'}]
       },
-      await constructVerificationRule(prompt, existingRulesets)
+      await constructVerificationRule(existingRulesets, {prompt, logger})
     ].filter(Boolean),
     'name'
   );

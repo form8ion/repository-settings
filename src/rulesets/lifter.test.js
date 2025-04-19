@@ -11,11 +11,17 @@ describe('rulesets details lifter', () => {
   const GITHUB_ACTIONS_INTEGRATION_ID = 15368;
   const prompt = () => undefined;
   const bypassTeamId = any.integer();
+  const logger = {
+    info: () => undefined,
+    success: () => undefined,
+    warn: () => undefined,
+    error: () => undefined
+  };
 
   it('should define rules to prevent destruction of the default branch and require verification to pass', async () => {
     when(requiredCheckBypassPrompt).calledWith(prompt).thenResolve({team: bypassTeamId});
 
-    expect(await liftRulesets({}, {prompt})).toEqual([
+    expect(await liftRulesets({}, {prompt, logger})).toEqual([
       {
         name: 'prevent destruction of the default branch',
         target: 'branch',
@@ -44,7 +50,7 @@ describe('rulesets details lifter', () => {
     const existingRulesets = any.listOf(() => ({...any.simpleObject, name: any.word()}));
     when(requiredCheckBypassPrompt).calledWith(prompt).thenResolve({team: bypassTeamId});
 
-    expect(await liftRulesets({existingRulesets}, {prompt})).toEqual([
+    expect(await liftRulesets({existingRulesets}, {prompt, logger})).toEqual([
       ...existingRulesets,
       {
         name: 'prevent destruction of the default branch',
@@ -77,6 +83,6 @@ describe('rulesets details lifter', () => {
       {...any.simpleObject, name: 'verification must pass'}
     ];
 
-    expect(await liftRulesets({existingRulesets}, {})).toEqual(existingRulesets);
+    expect(await liftRulesets({existingRulesets}, {logger})).toEqual(existingRulesets);
   });
 });

@@ -40,7 +40,7 @@ describe('lifter', () => {
       .thenResolve(existingConfig);
     when(liftRepository).calledWith({homepage, tags, existingRepositoryDetails}).thenReturn(repositoryUpdates);
     when(liftBranchProtection).calledWith().thenReturn(branchProtectionDetails);
-    when(liftRulesets).calledWith({existingRulesets, vcs}, {prompt}).thenResolve(rulesetsDetails);
+    when(liftRulesets).calledWith({existingRulesets, vcs}, {prompt, logger}).thenResolve(rulesetsDetails);
 
     const result = await lift({projectRoot, results: {homepage, tags}, vcs}, {logger, prompt});
 
