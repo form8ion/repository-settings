@@ -4,9 +4,23 @@ export default async function promptForCheckBypass(prompt, octokit, vcs) {
   const promptId = ids.REQUIRED_CHECK_BYPASS;
   const checkBypassTeamQuestionName = questionNames[promptId].CHECK_BYPASS_TEAM;
 
+  if (!octokit) {
+    const {[checkBypassTeamQuestionName]: teamId} = await prompt({
+      id: promptId,
+      questions: [
+        {
+          name: checkBypassTeamQuestionName,
+          message: 'Which team (by id) should be able to bypass the required checks?'
+        }
+      ]
+    });
+
+    return {team: teamId};
+  }
+
   const {data: teams} = await octokit.request('GET /orgs/{org}/teams', {org: vcs.owner});
 
-  const {[checkBypassTeamQuestionName]: teamName} = await prompt({
+  const {[checkBypassTeamQuestionName]: teamId} = await prompt({
     id: promptId,
     questions: [
       {
@@ -18,5 +32,5 @@ export default async function promptForCheckBypass(prompt, octokit, vcs) {
     ]
   });
 
-  return {team: teamName};
+  return {team: teamId};
 }

@@ -65,10 +65,15 @@ When('scaffolder results are processed', async function () {
         logger,
         octokit: this.octokit,
         prompt: ({id, questions}) => {
+          let chosenTeamId;
           const checkBypassTeamQuestionName = promptConstants.questionNames[id].CHECK_BYPASS_TEAM;
 
-          const {choices: checkBypassTeamChoices} = questions.find(({name}) => name === checkBypassTeamQuestionName);
-          const {value: chosenTeamId} = checkBypassTeamChoices.find(team => team.name === this.maintenanceTeamName);
+          if (this.octokit) {
+            const {choices: checkBypassTeamChoices} = questions.find(({name}) => name === checkBypassTeamQuestionName);
+            ({value: chosenTeamId} = checkBypassTeamChoices.find(team => team.name === this.maintenanceTeamName));
+          } else {
+            chosenTeamId = this.maintenanceTeamName;
+          }
 
           return {[checkBypassTeamQuestionName]: chosenTeamId};
         }

@@ -8,7 +8,7 @@ export default async function liftRepositorySettings(
   {projectRoot, results: {homepage, tags}, vcs},
   {logger, prompt, octokit}
 ) {
-  logger.info('Lifting repository settings', {level: 'secondary'});
+  logger.info('Lifting repository settings');
 
   const existingConfig = await loadConfigFile({
     format: fileTypes.YAML,
