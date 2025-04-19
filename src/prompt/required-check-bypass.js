@@ -1,10 +1,12 @@
 import {ids, questionNames} from './constants.js';
 
-export default async function promptForCheckBypass(vcs, {prompt, octokit}) {
+export default async function promptForCheckBypass(vcs, {prompt, octokit, logger}) {
   const promptId = ids.REQUIRED_CHECK_BYPASS;
   const checkBypassTeamQuestionName = questionNames[promptId].CHECK_BYPASS_TEAM;
 
   if (!octokit) {
+    logger.warn('Unable to enable choosing from existing teams without an octokit instance');
+
     const {[checkBypassTeamQuestionName]: teamId} = await prompt({
       id: promptId,
       questions: [

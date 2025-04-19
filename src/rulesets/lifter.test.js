@@ -21,7 +21,7 @@ describe('rulesets details lifter', () => {
   };
 
   it('should define rules to prevent destruction of the default branch and require verification to pass', async () => {
-    when(requiredCheckBypassPrompt).calledWith(vcs, {prompt, octokit}).thenResolve({team: bypassTeamId});
+    when(requiredCheckBypassPrompt).calledWith(vcs, {prompt, octokit, logger}).thenResolve({team: bypassTeamId});
 
     expect(await liftRulesets({vcs}, {prompt, logger, octokit})).toEqual([
       {

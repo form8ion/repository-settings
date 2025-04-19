@@ -11,6 +11,12 @@ describe('required check bypass prompt', () => {
   const teamId = any.word();
   const repositoryOwner = any.word();
   const vcs = {...any.simpleObject(), owner: repositoryOwner};
+  const logger = {
+    info: () => undefined,
+    success: () => undefined,
+    warn: () => undefined,
+    error: () => undefined
+  };
 
   it('should enable choosing a team to bypass the required check', async () => {
     const prompt = vi.fn();
@@ -49,6 +55,6 @@ describe('required check bypass prompt', () => {
       })
       .thenResolve({[checkBypassTeamQuestionName]: teamId});
 
-    expect(await promptForCheckBypass(vcs, {prompt})).toEqual({team: teamId});
+    expect(await promptForCheckBypass(vcs, {prompt, logger})).toEqual({team: teamId});
   });
 });
