@@ -21,7 +21,7 @@ describe('rulesets details lifter', () => {
   };
 
   it('should define rules to prevent destruction of the default branch and require verification to pass', async () => {
-    when(requiredCheckBypassPrompt).calledWith(prompt, octokit, vcs).thenResolve({team: bypassTeamId});
+    when(requiredCheckBypassPrompt).calledWith(vcs, {prompt, octokit}).thenResolve({team: bypassTeamId});
 
     expect(await liftRulesets({vcs}, {prompt, logger, octokit})).toEqual([
       {
@@ -50,9 +50,9 @@ describe('rulesets details lifter', () => {
 
   it('should append to the existing rulesets', async () => {
     const existingRulesets = any.listOf(() => ({...any.simpleObject, name: any.word()}));
-    when(requiredCheckBypassPrompt).calledWith(prompt).thenResolve({team: bypassTeamId});
+    when(requiredCheckBypassPrompt).calledWith(vcs, {prompt, octokit}).thenResolve({team: bypassTeamId});
 
-    expect(await liftRulesets({existingRulesets}, {prompt, logger})).toEqual([
+    expect(await liftRulesets({existingRulesets, vcs}, {prompt, logger, octokit})).toEqual([
       ...existingRulesets,
       {
         name: 'prevent destruction of the default branch',

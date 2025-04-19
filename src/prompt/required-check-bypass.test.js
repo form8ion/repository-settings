@@ -32,7 +32,7 @@ describe('required check bypass prompt', () => {
       })
       .thenResolve({[checkBypassTeamQuestionName]: teamId});
 
-    expect(await promptForCheckBypass(prompt, octokit, vcs)).toEqual({team: teamId});
+    expect(await promptForCheckBypass(vcs, {prompt, octokit})).toEqual({team: teamId});
   });
 
   it('should prompt for a team id as direct input if an octokit instance is not provided', async () => {
@@ -49,6 +49,6 @@ describe('required check bypass prompt', () => {
       })
       .thenResolve({[checkBypassTeamQuestionName]: teamId});
 
-    expect(await promptForCheckBypass(prompt, undefined, vcs)).toEqual({team: teamId});
+    expect(await promptForCheckBypass(vcs, {prompt})).toEqual({team: teamId});
   });
 });

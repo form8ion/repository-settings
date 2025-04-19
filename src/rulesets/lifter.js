@@ -11,7 +11,7 @@ async function constructVerificationRule({existingRulesets, vcs}, {prompt, logge
 
   logger.info('Defining verification ruleset', {level: 'secondary'});
 
-  const {team} = await requiredCheckBypassPrompt(prompt, octokit, vcs);
+  const {team} = await requiredCheckBypassPrompt(vcs, {prompt, octokit});
 
   return {
     name: 'verification must pass',

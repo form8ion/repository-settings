@@ -1,6 +1,6 @@
 import {ids, questionNames} from './constants.js';
 
-export default async function promptForCheckBypass(prompt, octokit, vcs) {
+export default async function promptForCheckBypass(vcs, {prompt, octokit}) {
   const promptId = ids.REQUIRED_CHECK_BYPASS;
   const checkBypassTeamQuestionName = questionNames[promptId].CHECK_BYPASS_TEAM;
 
