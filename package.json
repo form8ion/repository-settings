@@ -4,6 +4,9 @@
   "license": "MIT",
   "version": "0.0.0-semantically-released",
   "type": "module",
+  "engines": {
+    "node": "^20.19.0 || >=22.14.0"
+  },
   "author": "Matt Travi <npm@travi.org> (https://matt.travi.org)",
   "repository": "form8ion/repository-settings",
   "bugs": "https://github.com/form8ion/repository-settings/issues",
@@ -40,7 +43,8 @@
     "test:integration:focus": "run-s 'test:integration:base -- --profile focus'",
     "lint:gherkin": "gherkin-lint --config=.gherkin-lintrc.json",
     "pretest": "run-s build",
-    "test": "npm-run-all --print-label --parallel lint:* --parallel test:*"
+    "test": "npm-run-all --print-label --parallel lint:* --parallel test:*",
+    "lint:engines": "ls-engines"
   },
   "files": [
     "example.js",
@@ -53,14 +57,16 @@
   "packageManager": "npm@11.3.0+sha512.96eb611483f49c55f7fa74df61b588de9e213f80a256728e6798ddc67176c7b07e4a1cfc7de8922422cbce02543714367037536955221fa451b0c4fefaf20c66",
   "dependencies": {
     "@form8ion/core": "^4.3.0",
-    "@travi/cli-messages": "^1.1.0"
+    "lodash.uniqby": "^4.7.0"
   },
   "devDependencies": {
     "@cucumber/cucumber": "11.2.0",
     "@form8ion/commitlint-config": "2.0.5",
     "@form8ion/eslint-config": "7.0.12",
     "@form8ion/eslint-config-cucumber": "1.4.1",
+    "@form8ion/eslint-config-vitest": "1.0.0",
     "@form8ion/remark-lint-preset": "6.0.7",
+    "@octokit/core": "6.1.5",
     "@travi/any": "3.1.2",
     "ban-sensitive-files": "1.10.7",
     "c8": "10.1.3",
@@ -71,7 +77,9 @@
     "husky": "9.1.7",
     "js-yaml": "4.1.0",
     "lockfile-lint": "4.14.0",
+    "ls-engines": "0.9.3",
     "mock-fs": "5.5.0",
+    "msw": "2.7.5",
     "npm-run-all2": "7.0.2",
     "publint": "0.3.12",
     "remark-cli": "12.0.1",
@@ -82,5 +90,8 @@
     "rollup-plugin-auto-external": "2.0.0",
     "vitest": "3.1.1",
     "vitest-when": "0.6.0"
+  },
+  "peerDependencies": {
+    "@octokit/core": "^6.1.5"
   }
 }

@@ -29,6 +29,7 @@ form8ion plugin for managing configuration for the
 [![MIT license][license-badge]][license-link]
 [![npm][npm-badge]][npm-link]
 [![Try @form8ion/repository-settings on RunKit][runkit-badge]][runkit-link]
+![node][node-badge]
 
 <!--consumer-badges end -->
 
@@ -43,21 +44,61 @@ $ npm install @form8ion/repository-settings --save-prod
 #### Import
 
 ```javascript
-import {scaffold} from '@form8ion/repository-settings';
+import {Octokit} from '@octokit/core';
+import any from '@travi/any';
+import {scaffold, test as projectManagedByRepositorySettings, lift, promptConstants} from '@form8ion/repository-settings';
 ```
 
 #### Execute
 
 ```javascript
 (async () => {
-  await scaffold({
-    projectRoot: process.cwd(),
-    projectName: 'project-name',
-    description: 'description of the project',
-    homepage: 'https://npm.im/project-name',
-    visibility: 'Public',
-    topics: ['topic 1', 'topic 2']
-  });
+  const projectRoot = process.cwd();
+  const logger = {
+    info: message => console.error(message),
+    success: message => console.error(message),
+    warn: message => console.error(message),
+    error: message => console.error(message)
+  };
+
+  await scaffold(
+    {
+      projectRoot,
+      projectName: 'project-name',
+      description: 'description of the project',
+      homepage: 'https://npm.im/project-name',
+      visibility: 'Public',
+      topics: ['topic 1', 'topic 2']
+    },
+    {logger}
+  );
+
+  if (await projectManagedByRepositorySettings({projectRoot})) {
+    await lift(
+      {
+        projectRoot,
+        vcs: {owner: 'account-name', name: 'repository-name'},
+        results: {
+          homepage: 'https://npm.im/project-name',
+          tags: ['tag1', 'tag2']
+        }
+      },
+      {
+        logger,
+        octokit: new Octokit(),
+        prompt: async ({id}) => {
+          const {questionNames, ids} = promptConstants;
+          const expectedPromptId = ids.REQUIRED_CHECK_BYPASS;
+
+          if (expectedPromptId === id) {
+            return {[questionNames[expectedPromptId].CHECK_BYPASS_TEAM]: any.word()};
+          }
+
+          throw new Error(`Unknown prompt with ID: ${id}`);
+        }
+      }
+    );
+  }
 })();
 ```
 
@@ -127,3 +168,5 @@ $ npm test
 [runkit-badge]: https://badge.runkitcdn.com/@form8ion/repository-settings.svg
 
 [slsa-badge]: https://slsa.dev/images/gh-badge-level2.svg
+
+[node-badge]: https://img.shields.io/node/v/@form8ion/repository-settings?logo=node.js

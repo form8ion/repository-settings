@@ -4,7 +4,12 @@ import {lift as liftRepository} from './repository/index.js';
 import {lift as liftBranchProtection} from './branches/index.js';
 import {lift as liftRulesets} from './rulesets/index.js';
 
-export default async function ({projectRoot, results: {homepage, tags}}) {
+export default async function liftRepositorySettings(
+  {projectRoot, results: {homepage, tags}, vcs},
+  {logger, prompt, octokit}
+) {
+  logger.info('Lifting repository settings', {level: 'secondary'});
+
   const existingConfig = await loadConfigFile({
     format: fileTypes.YAML,
     path: `${projectRoot}/.github`,
@@ -19,7 +24,7 @@ export default async function ({projectRoot, results: {homepage, tags}}) {
       ...existingConfig,
       repository: liftRepository({homepage, tags, existingRepositoryDetails: existingConfig.repository}),
       branches: liftBranchProtection(),
-      rulesets: liftRulesets({existingRulesets: existingConfig.rulesets})
+      rulesets: await liftRulesets({existingRulesets: existingConfig.rulesets, vcs}, {prompt, logger, octokit})
     }
   });
 
