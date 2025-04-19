@@ -1,4 +1,6 @@
-import {After, AfterAll, BeforeAll, Given} from '@cucumber/cucumber';
+import {Octokit} from '@octokit/core';
+
+import {After, AfterAll, Before, BeforeAll, Given} from '@cucumber/cucumber';
 import {http, HttpResponse} from 'msw';
 import {setupServer} from 'msw/node';
 import any from '@travi/any';
@@ -19,6 +21,10 @@ BeforeAll(async () => {
   server.listen();
 });
 
+Before(function () {
+  this.octokit = new Octokit({auth: githubToken});
+});
+
 After(function () {
   server.resetHandlers();
 });
@@ -29,17 +35,23 @@ AfterAll(() => {
 
 Given('a maintainers team exists', async function () {
   this.maintenanceTeamId = any.integer();
+  this.maintenanceTeamName = any.word();
+  const anyGithubTeam = () => ({id: any.integer(), name: any.word(), slug: any.word()});
 
   server.use(
     http.get(
       `https://api.github.com/orgs/${this.repositoryOwner}/teams`,
       ({request}) => {
         if (authorizationHeaderIncludesToken(request)) {
-          return HttpResponse.json([{
-            id: this.maintenanceTeamId,
-            name: any.word(),
-            slug: any.word()
-          }]);
+          return HttpResponse.json([
+            ...any.listOf(anyGithubTeam),
+            {
+              id: this.maintenanceTeamId,
+              name: this.maintenanceTeamName,
+              slug: any.word()
+            },
+            ...any.listOf(anyGithubTeam)
+          ]);
         }
 
         return undefined;

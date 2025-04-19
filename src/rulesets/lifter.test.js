@@ -10,6 +10,8 @@ vi.mock('../prompt/index.js');
 describe('rulesets details lifter', () => {
   const GITHUB_ACTIONS_INTEGRATION_ID = 15368;
   const prompt = () => undefined;
+  const octokit = any.simpleObject();
+  const vcs = any.simpleObject();
   const bypassTeamId = any.integer();
   const logger = {
     info: () => undefined,
@@ -19,9 +21,9 @@ describe('rulesets details lifter', () => {
   };
 
   it('should define rules to prevent destruction of the default branch and require verification to pass', async () => {
-    when(requiredCheckBypassPrompt).calledWith(prompt).thenResolve({team: bypassTeamId});
+    when(requiredCheckBypassPrompt).calledWith(prompt, octokit, vcs).thenResolve({team: bypassTeamId});
 
-    expect(await liftRulesets({}, {prompt, logger})).toEqual([
+    expect(await liftRulesets({vcs}, {prompt, logger, octokit})).toEqual([
       {
         name: 'prevent destruction of the default branch',
         target: 'branch',

@@ -6,7 +6,7 @@ import stubbedFs from 'mock-fs';
 import any from '@travi/any';
 
 // eslint-disable-next-line import/no-extraneous-dependencies,import/no-unresolved
-import {scaffold, test, lift, promptConstants} from '@form8ion/repository-settings';
+import {lift, promptConstants, scaffold, test} from '@form8ion/repository-settings';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));          // eslint-disable-line no-underscore-dangle
 const stubbedNodeModules = stubbedFs.load(resolve(__dirname, '..', '..', '..', '..', 'node_modules'));
@@ -25,6 +25,7 @@ Before(async function () {
   this.projectVisibility = any.fromList(['Public', 'Private']);
   this.topics = any.listOf(any.word);
   this.existingRulesets = [];
+  this.repositoryOwner = any.word();
 
   stubbedFs({
     node_modules: stubbedNodeModules
@@ -50,8 +51,6 @@ When('the project is scaffolded', async function () {
 });
 
 When('scaffolder results are processed', async function () {
-  this.repositoryOwner = any.word();
-
   if (await test({projectRoot: this.projectRoot})) {
     await lift(
       {
@@ -64,7 +63,15 @@ When('scaffolder results are processed', async function () {
       },
       {
         logger,
-        prompt: ({id}) => ({[promptConstants.questionNames[id].CHECK_BYPASS_TEAM]: this.maintenanceTeamId})
+        octokit: this.octokit,
+        prompt: ({id, questions}) => {
+          const checkBypassTeamQuestionName = promptConstants.questionNames[id].CHECK_BYPASS_TEAM;
+
+          const {choices: checkBypassTeamChoices} = questions.find(({name}) => name === checkBypassTeamQuestionName);
+          const {value: chosenTeamId} = checkBypassTeamChoices.find(team => team.name === this.maintenanceTeamName);
+
+          return {[checkBypassTeamQuestionName]: chosenTeamId};
+        }
       }
     );
   }

@@ -4,14 +4,14 @@ import {requiredCheckBypassPrompt} from '../prompt/index.js';
 
 const GITHUB_ACTIONS_INTEGRATION_ID = 15368;
 
-async function constructVerificationRule(existingRulesets, {prompt, logger}) {
+async function constructVerificationRule({existingRulesets, vcs}, {prompt, logger, octokit}) {
   if (existingRulesets.find(ruleset => 'verification must pass' === ruleset.name)) {
     return undefined;
   }
 
   logger.info('Defining verification ruleset', {level: 'secondary'});
 
-  const {team} = await requiredCheckBypassPrompt(prompt);
+  const {team} = await requiredCheckBypassPrompt(prompt, octokit, vcs);
 
   return {
     name: 'verification must pass',
@@ -29,7 +29,7 @@ async function constructVerificationRule(existingRulesets, {prompt, logger}) {
   };
 }
 
-export default async function liftRulesets({existingRulesets = []}, {prompt, logger}) {
+export default async function liftRulesets({existingRulesets = [], vcs}, {prompt, logger, octokit}) {
   logger.info('Lifting rulesets', {level: 'secondary'});
 
   return uniqBy(
@@ -42,7 +42,7 @@ export default async function liftRulesets({existingRulesets = []}, {prompt, log
         conditions: {ref_name: {include: ['~DEFAULT_BRANCH'], exclude: []}},
         rules: [{type: 'deletion'}, {type: 'non_fast_forward'}]
       },
-      await constructVerificationRule(existingRulesets, {prompt, logger})
+      await constructVerificationRule({existingRulesets, vcs}, {prompt, logger, octokit})
     ].filter(Boolean),
     'name'
   );

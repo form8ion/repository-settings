@@ -4,6 +4,7 @@ Feature: Lift
     Given the GitHub repository settings are managed by the repository-settings app
     And the scaffolder results include homepage
     And the scaffolder results include tags
+    And a maintainers team exists
     When scaffolder results are processed
     Then repository details are updated in the settings file
 
@@ -11,6 +12,7 @@ Feature: Lift
     Given the GitHub repository settings are managed by the repository-settings app
     And the scaffolder results include tags
     But the scaffolder results do not include homepage
+    And a maintainers team exists
     When scaffolder results are processed
     Then repository details are updated in the settings file
 
@@ -18,6 +20,7 @@ Feature: Lift
     Given the GitHub repository settings are managed by the repository-settings app
     And the scaffolder results include homepage
     But the scaffolder results do not include tags
+    And a maintainers team exists
     When scaffolder results are processed
     Then repository details are updated in the settings file
 
@@ -26,6 +29,7 @@ Feature: Lift
     And the existing settings file includes existing tags
     And the scaffolder results include homepage
     And the scaffolder results include tags
+    And a maintainers team exists
     When scaffolder results are processed
     Then repository details are updated in the settings file
 

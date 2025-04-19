@@ -44,6 +44,7 @@ $ npm install @form8ion/repository-settings --save-prod
 #### Import
 
 ```javascript
+import {Octokit} from '@octokit/core';
 import any from '@travi/any';
 import {scaffold, test as projectManagedByRepositorySettings, lift, promptConstants} from '@form8ion/repository-settings';
 ```
@@ -76,6 +77,7 @@ import {scaffold, test as projectManagedByRepositorySettings, lift, promptConsta
     await lift(
       {
         projectRoot,
+        vcs: {owner: 'account-name', name: 'repository-name'},
         results: {
           homepage: 'https://npm.im/project-name',
           tags: ['tag1', 'tag2']
@@ -83,6 +85,7 @@ import {scaffold, test as projectManagedByRepositorySettings, lift, promptConsta
       },
       {
         logger,
+        octokit: new Octokit(),
         prompt: async ({id}) => {
           const {questionNames, ids} = promptConstants;
           const expectedPromptId = ids.REQUIRED_CHECK_BYPASS;

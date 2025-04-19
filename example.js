@@ -1,11 +1,17 @@
 // #### Import
-// remark-usage-ignore-next
+// remark-usage-ignore-next 3
 import stubbedFs from 'mock-fs';
+import {http, HttpResponse} from 'msw';
+import {setupServer} from 'msw/node';
+import {Octokit} from '@octokit/core';
 import any from '@travi/any';
 import {scaffold, test as projectManagedByRepositorySettings, lift, promptConstants} from './lib/index.mjs';
 
-// remark-usage-ignore-next
+// remark-usage-ignore-next 4
 stubbedFs();
+const server = setupServer();
+server.use(http.get('https://api.github.com/orgs/account-name/teams', () => HttpResponse.json([])));
+server.listen();
 
 // #### Execute
 
@@ -36,6 +42,7 @@ stubbedFs();
     await lift(
       {
         projectRoot,
+        vcs: {owner: 'account-name', name: 'repository-name'},
         results: {
           homepage: 'https://npm.im/project-name',
           tags: ['tag1', 'tag2']
@@ -43,6 +50,7 @@ stubbedFs();
       },
       {
         logger,
+        octokit: new Octokit(),
         prompt: async ({id}) => {
           const {questionNames, ids} = promptConstants;
           const expectedPromptId = ids.REQUIRED_CHECK_BYPASS;
