@@ -19,6 +19,12 @@ describe('lifter', () => {
   const projectRoot = any.simpleObject();
   const tags = any.listOf(any.word);
   const homepage = any.url();
+  const logger = {
+    info: () => undefined,
+    success: () => undefined,
+    warn: () => undefined,
+    error: () => undefined
+  };
 
   it('should set properties in the settings file', async () => {
     const repositoryUpdates = any.simpleObject();
@@ -27,14 +33,17 @@ describe('lifter', () => {
     const existingRepositoryDetails = any.simpleObject();
     const existingRulesets = any.simpleObject();
     const existingConfig = {...any.simpleObject(), repository: existingRepositoryDetails, rulesets: existingRulesets};
+    const vcs = any.simpleObject();
+    const octokit = any.simpleObject();
+    const prompt = () => undefined;
     when(loadConfigFile)
       .calledWith({format: fileTypes.YAML, path: `${projectRoot}/.github`, name: 'settings'})
       .thenResolve(existingConfig);
     when(liftRepository).calledWith({homepage, tags, existingRepositoryDetails}).thenReturn(repositoryUpdates);
     when(liftBranchProtection).calledWith().thenReturn(branchProtectionDetails);
-    when(liftRulesets).calledWith({existingRulesets}).thenReturn(rulesetsDetails);
+    when(liftRulesets).calledWith({existingRulesets, vcs}, {prompt, logger, octokit}).thenResolve(rulesetsDetails);
 
-    const result = await lift({projectRoot, results: {homepage, tags}});
+    const result = await lift({projectRoot, results: {homepage, tags}, vcs}, {logger, prompt, octokit});
 
     expect(result).toEqual({});
     expect(writeConfigFile).toHaveBeenCalledWith({
