@@ -26,6 +26,7 @@ Before(async function () {
   this.topics = any.listOf(any.word);
   this.existingRulesets = [];
   this.repositoryOwner = any.word();
+  this.userAccount = any.word();
 
   stubbedFs({
     node_modules: stubbedNodeModules

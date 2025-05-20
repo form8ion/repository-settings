@@ -7,10 +7,13 @@ import {Octokit} from '@octokit/core';
 import any from '@travi/any';
 import {scaffold, test as projectManagedByRepositorySettings, lift, promptConstants} from './lib/index.mjs';
 
-// remark-usage-ignore-next 4
+// remark-usage-ignore-next 7
 stubbedFs();
 const server = setupServer();
-server.use(http.get('https://api.github.com/orgs/account-name/teams', () => HttpResponse.json([])));
+server.use(
+  http.get('https://api.github.com/user', () => HttpResponse.json({login: any.word()})),
+  http.get('https://api.github.com/orgs/account-name/teams', () => HttpResponse.json([]))
+);
 server.listen();
 
 // #### Execute

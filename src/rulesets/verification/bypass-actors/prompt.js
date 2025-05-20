@@ -1,23 +1,22 @@
-import {ids, questionNames} from './constants.js';
+import {ids, questionNames} from '../../../prompt/constants.js';
 
-export default async function promptForCheckBypass(vcs, {prompt, octokit, logger}) {
+export const ADMIN_ROLE_ID = 5;
+
+export default async function promptForCheckBypass(vcs, {prompt, octokit}) {
   const promptId = ids.REQUIRED_CHECK_BYPASS;
   const checkBypassTeamQuestionName = questionNames[promptId].CHECK_BYPASS_TEAM;
 
   if (!octokit) {
-    logger.warn('Unable to enable choosing from existing teams without an octokit instance');
+    const missingOctokitError = new Error('No octokit instance provided');
+    missingOctokitError.code = 'ERR_MISSING_OCTOKIT_INSTANCE';
 
-    const {[checkBypassTeamQuestionName]: teamId} = await prompt({
-      id: promptId,
-      questions: [
-        {
-          name: checkBypassTeamQuestionName,
-          message: 'Which team (by id) should be able to bypass the required checks?'
-        }
-      ]
-    });
+    throw missingOctokitError;
+  }
 
-    return {team: teamId};
+  const {data: {login: authenticatedUser}} = await octokit.request('GET /user');
+
+  if (vcs.owner === authenticatedUser) {
+    return {role: ADMIN_ROLE_ID};
   }
 
   const {data: teams} = await octokit.request('GET /orgs/{org}/teams', {org: vcs.owner});

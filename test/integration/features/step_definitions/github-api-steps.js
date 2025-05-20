@@ -56,6 +56,27 @@ Given('a maintainers team exists', async function () {
 
         return undefined;
       }
-    )
+    ),
+    http.get('https://api.github.com/user', ({request}) => {
+      if (authorizationHeaderIncludesToken(request)) {
+        return HttpResponse.json({login: this.userAccount});
+      }
+
+      return undefined;
+    })
+  );
+});
+
+Given('the authenticated user owns the repository', async function () {
+  this.repositoryOwner = this.userAccount;
+
+  server.use(
+    http.get('https://api.github.com/user', ({request}) => {
+      if (authorizationHeaderIncludesToken(request)) {
+        return HttpResponse.json({login: this.userAccount});
+      }
+
+      return undefined;
+    })
   );
 });

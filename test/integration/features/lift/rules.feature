@@ -9,7 +9,7 @@ Feature: Rules
     When scaffolder results are processed
     Then classic branch protection has been disabled
     And rulesets include a rule to prevent destruction of the default branch
-    And rulesets include a rule to require verification to pass
+    And rulesets include a rule to require verification to pass but allows the chosen team to bypass
 
   Scenario: Classic branch protection disabled and existing rulesets
     Given the GitHub repository settings are managed by the repository-settings app
@@ -21,7 +21,7 @@ Feature: Rules
     When scaffolder results are processed
     Then classic branch protection has been disabled
     And existing rulesets are untouched
-    And rulesets include a rule to require verification to pass
+    And rulesets include a rule to require verification to pass but allows the chosen team to bypass
 
   Scenario: existing rulesets without required checks
     Given the GitHub repository settings are managed by the repository-settings app
@@ -31,5 +31,14 @@ Feature: Rules
     And rulesets are configured
     And a maintainers team exists
     When scaffolder results are processed
-    Then rulesets include a rule to require verification to pass
+    Then rulesets include a rule to require verification to pass but allows the chosen team to bypass
     And existing rulesets are untouched
+
+  Scenario: user repository
+    Given the GitHub repository settings are managed by the repository-settings app
+    And an authenticated octokit instance is provided
+    And required checks are not configured
+    And rulesets are configured
+    And the authenticated user owns the repository
+    When scaffolder results are processed
+    Then rulesets include a rule to require verification to pass but allows the admin role to bypass

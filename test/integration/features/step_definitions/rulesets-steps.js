@@ -7,6 +7,7 @@ import {assert} from 'chai';
 import any from '@travi/any';
 
 const GITHUB_ACTIONS_INTEGRATION_ID = 15368;
+const ADMIN_ROLE_ID = 5;
 
 Given('rulesets are configured', async function () {
   this.existingRulesets = [
@@ -79,7 +80,7 @@ Then('existing rulesets are untouched', async function () {
   this.existingRulesets.forEach(existingRuleset => assert.deepNestedInclude(rulesets, existingRuleset));
 });
 
-Then('rulesets include a rule to require verification to pass', async function () {
+Then('rulesets include a rule to require verification to pass but allows the chosen team to bypass', async function () {
   const {rulesets} = load(await fs.readFile(`${this.projectRoot}/.github/settings.yml`, 'utf-8'));
 
   assert.deepNestedInclude(
@@ -97,6 +98,29 @@ Then('rulesets include a rule to require verification to pass', async function (
         }
       }],
       bypass_actors: [{actor_id: this.maintenanceTeamId, actor_type: 'Team', bypass_mode: 'always'}]
+    }
+  );
+  assert.equal(rulesets.filter(rule => 'verification must pass' === rule.name).length, 1);
+});
+
+Then('rulesets include a rule to require verification to pass but allows the admin role to bypass', async function () {
+  const {rulesets} = load(await fs.readFile(`${this.projectRoot}/.github/settings.yml`, 'utf-8'));
+
+  assert.deepNestedInclude(
+    rulesets,
+    {
+      name: 'verification must pass',
+      target: 'branch',
+      enforcement: 'active',
+      conditions: {ref_name: {include: ['~DEFAULT_BRANCH'], exclude: []}},
+      rules: [{
+        type: 'required_status_checks',
+        parameters: {
+          strict_required_status_checks_policy: false,
+          required_status_checks: [{context: 'workflow-result', integration_id: GITHUB_ACTIONS_INTEGRATION_ID}]
+        }
+      }],
+      bypass_actors: [{actor_id: ADMIN_ROLE_ID, actor_type: 'RepositoryRole', bypass_mode: 'always'}]
     }
   );
   assert.equal(rulesets.filter(rule => 'verification must pass' === rule.name).length, 1);
