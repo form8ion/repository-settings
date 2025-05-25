@@ -92,6 +92,6 @@
     "vitest-when": "0.6.0"
   },
   "peerDependencies": {
-    "@octokit/core": "^6.1.5 || ^7.0.0"
+    "@octokit/core": "^7.0.0"
   }
 }
