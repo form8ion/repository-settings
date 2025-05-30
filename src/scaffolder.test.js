@@ -1,4 +1,3 @@
-import {promises as fs} from 'node:fs';
 import {fileTypes, writeConfigFile} from '@form8ion/core';
 
 import {afterEach, describe, expect, it, vi} from 'vitest';
@@ -9,7 +8,6 @@ import {when} from 'vitest-when';
 import {scaffold as scaffoldRepository} from './repository/index.js';
 import scaffoldSettings from './scaffolder.js';
 
-vi.mock('node:fs');
 vi.mock('@form8ion/core');
 vi.mock('./repository/index.js');
 
@@ -39,7 +37,6 @@ describe('settings', () => {
 
     await scaffoldSettings({projectRoot, projectName, description, homepage, topics, visibility}, {logger});
 
-    expect(fs.mkdir).toHaveBeenCalledWith(`${projectRoot}/.github`, {recursive: true});
     expect(writeConfigFile).toHaveBeenCalledWith({
       path: `${projectRoot}/.github`,
       name: 'settings',

@@ -29,6 +29,7 @@ Before(async function () {
   this.userAccount = any.word();
 
   stubbedFs({
+    '.github': {},
     node_modules: stubbedNodeModules
   });
 });

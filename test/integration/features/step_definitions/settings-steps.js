@@ -8,7 +8,6 @@ import any from '@travi/any';
 Given('the GitHub repository settings are managed by the repository-settings app', async function () {
   this.existingSettingsContent = {...any.simpleObject(), repository: {...any.simpleObject(), homepage: any.url()}};
 
-  await fs.mkdir(`${this.projectRoot}/.github`, {recursive: true});
   await fs.writeFile(
     `${this.projectRoot}/.github/settings.yml`,
     dump(this.existingSettingsContent)

@@ -8,7 +8,7 @@ import any from '@travi/any';
 import {scaffold, test as projectManagedByRepositorySettings, lift, promptConstants} from './lib/index.mjs';
 
 // remark-usage-ignore-next 7
-stubbedFs();
+stubbedFs({'.github': {}});
 const server = setupServer();
 server.use(
   http.get('https://api.github.com/user', () => HttpResponse.json({login: any.word()})),
