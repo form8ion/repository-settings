@@ -86,12 +86,19 @@ import {scaffold, test as projectManagedByRepositorySettings, lift, promptConsta
       {
         logger,
         octokit: new Octokit(),
-        prompt: async ({id}) => {
+        prompt: async ({id, questions}) => {
           const {questionNames, ids} = promptConstants;
           const expectedPromptId = ids.REQUIRED_CHECK_BYPASS;
 
           if (expectedPromptId === id) {
-            return {[questionNames[expectedPromptId].CHECK_BYPASS_TEAM]: any.word()};
+            const checkBypassTeamQuestionName = questionNames[expectedPromptId].CHECK_BYPASS_TEAM;
+
+            return {
+              [checkBypassTeamQuestionName]: questions
+                .find(({name}) => name === checkBypassTeamQuestionName)
+                .choices
+                .find(({short}) => 'maintainers' === short).value
+            };
           }
 
           throw new Error(`Unknown prompt with ID: ${id}`);

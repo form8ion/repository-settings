@@ -7,12 +7,14 @@ import {Octokit} from '@octokit/core';
 import any from '@travi/any';
 import {scaffold, test as projectManagedByRepositorySettings, lift, promptConstants} from './lib/index.mjs';
 
-// remark-usage-ignore-next 7
+// remark-usage-ignore-next 9
 stubbedFs({'.github': {}});
 const server = setupServer();
 server.use(
   http.get('https://api.github.com/user', () => HttpResponse.json({login: any.word()})),
-  http.get('https://api.github.com/orgs/account-name/teams', () => HttpResponse.json([]))
+  http.get('https://api.github.com/orgs/account-name/teams', () => HttpResponse.json([
+    {slug: 'maintainers', name: 'maintainers', id: any.integer()}
+  ]))
 );
 server.listen();
 
@@ -54,12 +56,19 @@ server.listen();
       {
         logger,
         octokit: new Octokit(),
-        prompt: async ({id}) => {
+        prompt: async ({id, questions}) => {
           const {questionNames, ids} = promptConstants;
           const expectedPromptId = ids.REQUIRED_CHECK_BYPASS;
 
           if (expectedPromptId === id) {
-            return {[questionNames[expectedPromptId].CHECK_BYPASS_TEAM]: any.word()};
+            const checkBypassTeamQuestionName = questionNames[expectedPromptId].CHECK_BYPASS_TEAM;
+
+            return {
+              [checkBypassTeamQuestionName]: questions
+                .find(({name}) => name === checkBypassTeamQuestionName)
+                .choices
+                .find(({short}) => 'maintainers' === short).value
+            };
           }
 
           throw new Error(`Unknown prompt with ID: ${id}`);
