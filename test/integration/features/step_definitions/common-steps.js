@@ -7,6 +7,7 @@ import any from '@travi/any';
 
 // eslint-disable-next-line import/no-extraneous-dependencies,import/no-unresolved
 import {lift, promptConstants, scaffold, test} from '@form8ion/repository-settings';
+import {questionNames} from '../../../../src/prompt/constants.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));          // eslint-disable-line no-underscore-dangle
 const stubbedNodeModules = stubbedFs.load(resolve(__dirname, '..', '..', '..', '..', 'node_modules'));
@@ -68,16 +69,26 @@ When('scaffolder results are processed', async function () {
         octokit: this.octokit,
         prompt: ({id, questions}) => {
           let chosenTeamId;
-          const checkBypassTeamQuestionName = promptConstants.questionNames[id].CHECK_BYPASS_TEAM;
+          const {
+            [promptConstants.questionNames[id].CHECK_BYPASS_TEAM]: checkBypassTeamQuestionName,
+            [promptConstants.questionNames[id].ADMIN_BYPASS]: adminBypassQuestionName
+          } = questionNames[id];
 
-          if (this.octokit) {
-            const {choices: checkBypassTeamChoices} = questions.find(({name}) => name === checkBypassTeamQuestionName);
+          const checkBypassTeamQuestion = questions.find(({name}) => name === checkBypassTeamQuestionName);
+          const adminBypassQuestion = questions.find(({name}) => name === adminBypassQuestionName);
+
+          if (checkBypassTeamQuestion) {
+            const {choices: checkBypassTeamChoices} = checkBypassTeamQuestion;
             ({value: chosenTeamId} = checkBypassTeamChoices.find(team => team.name === this.maintenanceTeamName));
-          } else {
-            chosenTeamId = this.maintenanceTeamName;
+
+            return {[checkBypassTeamQuestionName]: chosenTeamId};
           }
 
-          return {[checkBypassTeamQuestionName]: chosenTeamId};
+          if (adminBypassQuestion) {
+            return {[adminBypassQuestionName]: true};
+          }
+
+          throw new Error('Expected a question to be asked for the required check bypass');
         }
       }
     );
