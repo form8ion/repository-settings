@@ -1,0 +1,8 @@
+export const ids = {REQUIRED_CHECK_BYPASS: 'REQUIRED_CHECK_BYPASS'};
+
+export const questionNames = {
+  [ids.REQUIRED_CHECK_BYPASS]: {
+    CHECK_BYPASS_TEAM: 'CHECK_BYPASS_TEAM',
+    ADMIN_BYPASS: 'ADMIN_BYPASS'
+  }
+};
