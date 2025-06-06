@@ -17,6 +17,6 @@ export default async function scaffoldVerificationRuleset({vcs}, {octokit, promp
         required_status_checks: [{context: 'workflow-result', integration_id: GITHUB_ACTIONS_INTEGRATION_ID}]
       }
     }],
-    ...await scaffoldBypassActors(vcs, {octokit, prompt})
+    ...await scaffoldBypassActors(vcs, {octokit, prompt, logger})
   };
 }

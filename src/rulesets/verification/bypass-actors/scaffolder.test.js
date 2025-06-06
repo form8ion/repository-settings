@@ -11,6 +11,12 @@ describe('verification ruleset bypass-actors scaffolder', () => {
   const vcs = any.simpleObject();
   const octokit = any.simpleObject();
   const prompt = () => undefined;
+  const logger = {
+    info: () => undefined,
+    success: () => undefined,
+    warn: () => undefined,
+    error: () => undefined
+  };
 
   it('should define the chosen team as a bypass actor', async () => {
     const team = any.integer();
@@ -35,7 +41,7 @@ describe('verification ruleset bypass-actors scaffolder', () => {
     error.code = 'ERR_MISSING_OCTOKIT_INSTANCE';
     when(requiredCheckBypassPrompt).calledWith(vcs, {prompt}).thenThrow(error);
 
-    expect(await scaffoldBypassActors(vcs, {prompt})).toEqual({});
+    expect(await scaffoldBypassActors(vcs, {prompt, logger})).toEqual({});
   });
 
   it('should rethrow other errors', async () => {

@@ -21,7 +21,7 @@ describe('verification ruleset scaffolder', () => {
     const octokit = any.simpleObject();
     const prompt = () => undefined;
     const bypassActors = any.simpleObject();
-    when(scaffoldBypassActors).calledWith(vcs, {octokit, prompt}).thenResolve(bypassActors);
+    when(scaffoldBypassActors).calledWith(vcs, {octokit, prompt, logger}).thenResolve(bypassActors);
 
     expect(await scaffoldVerificationRuleset({vcs}, {octokit, prompt, logger})).toEqual({
       name: 'verification must pass',
