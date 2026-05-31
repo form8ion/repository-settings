@@ -41,7 +41,7 @@
     "test:integration:wip": "run-s 'test:integration:base -- --profile wip'",
     "test:integration:wip:debug": "DEBUG=test run-s 'test:integration:wip'",
     "test:integration:focus": "run-s 'test:integration:base -- --profile focus'",
-    "lint:gherkin": "gherkin-lint --config=.gherkin-lintrc.json",
+    "lint:gherkin": "gplint --config .gplintrc.json",
     "pretest": "run-s build",
     "test": "npm-run-all --print-label --parallel lint:* --parallel test:*",
     "lint:engines": "ls-engines"
@@ -73,7 +73,7 @@
     "chai": "6.2.2",
     "cross-env": "10.1.0",
     "cz-conventional-changelog": "3.3.0",
-    "gherkin-lint": "4.2.4",
+    "gplint": "2.5.2",
     "husky": "9.1.7",
     "js-yaml": "4.1.1",
     "lockfile-lint": "5.0.0",
