@@ -160,7 +160,7 @@ $ npm test
 
 [coverage-link]: https://codecov.io/github/form8ion/repository-settings
 
-[coverage-badge]: https://img.shields.io/codecov/c/github/form8ion/repository-settings?logo=codecov
+[coverage-badge]: https://img.shields.io/codecov/c/github/form8ion/repository-settings/master?logo=codecov
 
 [license-link]: LICENSE
 
