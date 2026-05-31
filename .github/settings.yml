@@ -4,7 +4,7 @@ repository:
   description: >-
     form8ion plugin for managing configuration for the repository-settings app
     for a project
-  homepage: https://npm.im/@form8ion/repository-settings
+  homepage: https://www.npmjs.com/package/@form8ion/repository-settings
   private: false
 branches:
   - name: master
