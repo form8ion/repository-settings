@@ -23,7 +23,7 @@ Before(async function () {
   this.projectName = any.word();
   this.projectDescription = any.sentence();
   this.projectHomepage = any.url();
-  this.projectVisibility = any.fromList(['Public', 'Private']);
+  this.projectVisibility = any.fromList(['OSS', 'ISS', 'CS']);
   this.topics = any.listOf(any.word);
   this.existingRulesets = [];
   this.repositoryOwner = any.word();
