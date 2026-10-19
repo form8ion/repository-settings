@@ -37,7 +37,7 @@ server.listen();
       projectName: 'project-name',
       description: 'description of the project',
       homepage: 'https://npm.im/project-name',
-      visibility: 'Public',
+      visibility: 'OSS',
       topics: ['topic 1', 'topic 2']
     },
     {logger}
