@@ -5,6 +5,12 @@ import {Given, Then} from '@cucumber/cucumber';
 import {assert} from 'chai';
 import any from '@travi/any';
 
+export const projectToRepositoryVisibilityMap = {
+  OSS: 'public',
+  ISS: 'internal',
+  CS: 'private'
+};
+
 Given('the existing settings file includes existing tags', async function () {
   this.existingTags = any.listOf(any.word);
 
@@ -26,7 +32,7 @@ Then('repository settings are configured', async function () {
         name: this.projectName,
         description: this.projectDescription,
         homepage: this.projectHomepage,
-        private: 'Public' !== this.projectVisibility,
+        visibility: projectToRepositoryVisibilityMap[this.projectVisibility],
         topics: this.topics.join(', ')
       }
     }
